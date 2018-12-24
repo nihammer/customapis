@@ -1,13 +1,15 @@
 import * as functions from 'firebase-functions';
 import { firestore, storage, auth } from "firebase-admin";
 
-class Test {
+export class Test {
     private readonly fs: firestore.Firestore;
     private readonly st: storage.Storage;
+    private count: number;
 
     constructor() {
         this.fs = firestore();
         this.st = storage();
+        this.count = 0;
     }
 
     executionCount = functions.https.onRequest((request, response) => {
@@ -19,7 +21,7 @@ class Test {
 
     uploadImage = functions.https.onRequest((request, response) => {
         const imagePath = "test/sample.png";
-        return st.bucket().upload("./files/sample.png", { destination: imagePath }).then(() => {
+        return this.st.bucket().upload("./files/sample.png", { destination: imagePath }).then(() => {
             return response.send(imagePath);
         }).catch(error => {
             console.log("upload file failed.", error);
@@ -27,4 +29,4 @@ class Test {
     });
 }
 
-module.exports = Test;
+// module.exports = Test;

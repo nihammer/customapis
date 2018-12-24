@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import { firestore } from "firebase-admin";
 const moment = require('moment-timezone');
 
-class RaspberryPi {
+export class RaspberryPi {
     private readonly fs: firestore.Firestore;
 
     constructor() {
@@ -54,4 +54,4 @@ class RaspberryPi {
     }
 }
 
-module.exports = RaspberryPi;
+// module.exports = RaspberryPi;
