@@ -1,13 +1,11 @@
 import { initializeApp } from 'firebase-admin';
-import { Test } from './test';
+import { ForTest } from './for_test';
 import { RaspberryPi } from './raspberry_pi';
 
 initializeApp();
 
-console.log("Process env= " + JSON.stringify(process.env));
-
 export const Pi = new RaspberryPi();
-export const T = new Test();
+export const Test = new ForTest();
 
 // if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME.indexOf("Pi") === 0) {
 //     console.log("function name1 = " + process.env.FUNCTION_NAME);
