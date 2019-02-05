@@ -9,19 +9,34 @@ export class RaspberryPi {
         this.fs = firestore();
     }
 
-    registerIp = functions.https.onRequest((request, response) => {
-        console.log("ip=  " + JSON.stringify(request.ip));
+    registerIp = functions.https.onRequest(async (request, response) => {
         const currentTime: string = this.getLocalTime();
-        return this.fs.collection('raspberry').doc(currentTime)
+        const currentIp: string = request.body.current_ip;
+        const newIp: string = request.body.new_ip;
+        const currentSnap = await this.fs.collection('raspberrypi').doc('current').get();
+        if (currentIp !== currentSnap.data().ip_address) {
+            console.error('Current Ip is wrong!');
+            return response.send('Failed!');
+        }
+        return this.fs.collection('raspberrypi').doc('current')
             .set(
                 {
-                    ip_address: request.ip,
+                    ip_address: newIp,
                     created_at: currentTime
                 }
             )
             .then(() => {
-                console.log("Document successfully written!");
-                return response.send('OK');
+                return this.fs.doc(`raspberrypi/current/changedIpList/${currentTime}`)
+                    .set(
+                        {
+                            ip_address: currentSnap.data().ip_address,
+                            created_at: currentSnap.data().created_at
+                        }
+                    )
+                    .then(() => {
+                        console.log("Document successfully written!");
+                        return response.send('OK');
+                    });
             })
             .catch((err) => {
                 console.error("Error: ", err);
