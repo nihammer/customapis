@@ -26,7 +26,7 @@ export class RaspberryPi {
                 }
             )
             .then(() => {
-                return this.fs.doc(`raspberrypi/current/changedIpList/${currentTime}`)
+                return this.fs.doc(`raspberrypi/current/changedIps/${currentTime}`)
                     .set(
                         {
                             ip_address: currentSnap.data().ip_address,
@@ -46,8 +46,8 @@ export class RaspberryPi {
 
     getIp = functions.https.onRequest(async (request, response) => {
         const currentTime: string = this.getLocalTime();
-        const ipSnap = await this.fs.collection('raspberry').orderBy("created_at", "desc").limit(1).get();
-        return this.fs.collection('guest').doc(currentTime)
+        const ipSnap = await this.fs.collection('raspberrypi').doc('current').get();
+        return this.fs.doc(`raspberrypi/current/requestedIps/${currentTime}`)
             .set(
                 {
                     ip_address: request.ip,
@@ -55,7 +55,7 @@ export class RaspberryPi {
                 }
             )
             .then(() => {
-                return response.send(ipSnap.docs[0].data().ip_address);
+                return response.send(ipSnap.data().ip_address);
             })
             .catch((err) => {
                 console.error("Error: ", err);
