@@ -19,6 +19,9 @@ export class ForTest {
     });
 
     waitAFewSeconds = functions.https.onRequest((request, response) => {
+        if (process.env.FUNCTION_NAME) {
+            console.error("FUNCTION_NAME: ", process.env.FUNCTION_NAME);
+        }
         return new Promise(function(resolve, reject) {
             setTimeout(resolve, 5000);
         }).then(() => {
