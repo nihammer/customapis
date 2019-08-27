@@ -1,0 +1,3 @@
+class ForTest {
+    public builder()
+}
